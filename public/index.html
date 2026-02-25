@@ -3,350 +3,355 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CodeMate AI — Asisten Coding Kamu</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<title>CodeMate AI — by PRIME DEV</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <style>
   :root {
-    --bg: #0a0a0f;
-    --surface: #12121a;
-    --surface2: #1a1a26;
-    --border: #2a2a3d;
-    --accent: #00e5b0;
-    --accent2: #7c3aed;
-    --text: #e8e8f0;
-    --muted: #6b6b8a;
-    --user-bubble: #1e1e30;
-    --ai-bubble: #0f1f1a;
+    --bg:#0f0f13;--sidebar:#161620;--surface:#1c1c28;--border:#2e2e42;
+    --accent:#6c63ff;--accent-glow:rgba(108,99,255,0.15);--accent2:#ff6584;
+    --green:#43e97b;--text:#e8e8f5;--text2:#9898b8;--muted:#55556a;
   }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .sidebar{width:260px;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 14px;flex-shrink:0}
+  .brand{display:flex;align-items:center;gap:10px;padding:8px 10px 20px;border-bottom:1px solid var(--border);margin-bottom:16px}
+  .brand-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px}
+  .brand-text .name{font-size:15px;font-weight:800}
+  .brand-text .by{font-size:10px;color:var(--muted);font-family:'Fira Code',monospace}
+  .new-chat-btn{width:100%;padding:10px 14px;background:var(--accent-glow);border:1px solid rgba(108,99,255,0.3);border-radius:10px;color:var(--accent);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s;margin-bottom:16px}
+  .new-chat-btn:hover{background:rgba(108,99,255,0.25);border-color:var(--accent)}
+  .sidebar-section{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;padding:0 10px;margin-bottom:8px}
+  
+  .history-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:3px;margin-bottom:12px}
+  .history-list::-webkit-scrollbar{width:3px}
+  .history-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+  .history-item{padding:9px 12px;border-radius:10px;font-size:12.5px;color:var(--text2);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:8px}
+  .history-item:hover{background:var(--surface);color:var(--text)}
+  .history-item.active{background:var(--accent-glow);color:var(--accent);border:1px solid rgba(108,99,255,0.2)}
+  .history-item .h-title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .history-item .h-del{opacity:0;font-size:11px;padding:2px 6px;border-radius:4px;background:rgba(255,100,100,0.1);color:#ff6b6b;transition:opacity 0.15s;flex-shrink:0}
+  .history-item:hover .h-del{opacity:1}
+  .no-history{font-size:12px;color:var(--muted);text-align:center;padding:20px 10px;font-family:'Fira Code',monospace}
 
-  body {
-    font-family: 'Syne', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
+  .sidebar-footer{border-top:1px solid var(--border);padding-top:12px;font-size:11px;color:var(--muted);text-align:center;font-family:'Fira Code',monospace}
+  .online-badge{display:inline-flex;align-items:center;gap:5px;color:var(--green);margin-bottom:4px}
+  .online-badge::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 6px var(--green);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 
-  body::before {
-    content: '';
-    position: fixed;
-    top: -30%; left: -10%;
-    width: 60%; height: 60%;
-    background: radial-gradient(ellipse, rgba(0,229,176,0.04) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  body::after {
-    content: '';
-    position: fixed;
-    bottom: -20%; right: -10%;
-    width: 50%; height: 50%;
-    background: radial-gradient(ellipse, rgba(124,58,237,0.05) 0%, transparent 70%);
-    pointer-events: none;
-  }
+  .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+  .topbar{padding:14px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(15,15,19,0.9);backdrop-filter:blur(10px);flex-shrink:0}
+  .topbar-title{font-size:15px;font-weight:700}
+  .topbar-actions{display:flex;gap:8px}
+  .icon-btn{height:32px;padding:0 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:6px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.15s}
+  .icon-btn:hover{color:var(--text);border-color:var(--accent)}
 
-  header {
-    padding: 16px 24px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: rgba(10,10,15,0.8);
-    backdrop-filter: blur(10px);
-    flex-shrink: 0;
-    z-index: 10;
-  }
+  #chat{flex:1;overflow-y:auto;padding:32px 0 16px;display:flex;flex-direction:column;scroll-behavior:smooth}
+  #chat::-webkit-scrollbar{width:4px}
+  #chat::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
 
-  .logo {
-    width: 38px; height: 38px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-  }
+  #welcome{margin:auto;text-align:center;padding:20px;animation:fadeUp 0.5s ease;max-width:580px}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+  #welcome .emoji{font-size:52px;margin-bottom:20px;display:block}
+  #welcome h2{font-size:26px;font-weight:800;margin-bottom:10px;background:linear-gradient(135deg,#fff 0%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  #welcome p{color:var(--text2);font-size:14px;line-height:1.7;margin-bottom:28px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+  .chip{padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:30px;font-size:12.5px;color:var(--text2);cursor:pointer;transition:all 0.2s;font-family:'Fira Code',monospace}
+  .chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-glow)}
 
-  .header-text h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
-  .header-text p { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+  .msg-row{padding:10px 24px;display:flex;gap:14px;max-width:900px;width:100%;margin:0 auto;animation:fadeUp 0.25s ease}
+  .msg-row.user{flex-direction:row-reverse}
+  .avatar{width:32px;height:32px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px;margin-top:2px}
+  .msg-row.user .avatar{background:linear-gradient(135deg,var(--accent2),#c850c0)}
+  .msg-row.ai .avatar{background:linear-gradient(135deg,var(--accent),#38b2ff)}
+  .msg-content{flex:1;min-width:0}
+  .msg-name{font-size:11.5px;font-weight:700;color:var(--text2);margin-bottom:5px}
+  .msg-row.user .msg-name{text-align:right}
+  .msg-bubble{line-height:1.7;font-size:14.5px;word-break:break-word}
+  .msg-row.user .msg-bubble{background:var(--accent-glow);border:1px solid rgba(108,99,255,0.25);border-radius:16px;border-top-right-radius:4px;padding:10px 14px;display:inline-block;float:right;max-width:100%}
+  .msg-row.ai .msg-bubble{display:block}
 
-  .status-dot {
-    margin-left: auto;
-    display: flex; align-items: center; gap: 6px;
-    font-size: 12px; color: var(--muted);
-  }
-  .dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 8px var(--accent);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
+  .file-tag{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.2);border-radius:8px;margin-bottom:8px;font-size:12px;color:var(--text2);font-family:'Fira Code',monospace;float:right;clear:both}
 
-  #chat {
-    flex: 1;
-    overflow-y: auto;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    scroll-behavior: smooth;
-  }
-  #chat::-webkit-scrollbar { width: 4px; }
-  #chat::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .msg-row.ai .msg-bubble p{margin-bottom:12px;line-height:1.75}
+  .msg-row.ai .msg-bubble p:last-child{margin-bottom:0}
+  .msg-row.ai .msg-bubble h1,.msg-row.ai .msg-bubble h2,.msg-row.ai .msg-bubble h3{font-weight:700;margin:16px 0 8px;color:#fff}
+  .msg-row.ai .msg-bubble h1{font-size:18px}.msg-row.ai .msg-bubble h2{font-size:16px}.msg-row.ai .msg-bubble h3{font-size:15px}
+  .msg-row.ai .msg-bubble ul,.msg-row.ai .msg-bubble ol{padding-left:20px;margin-bottom:12px}
+  .msg-row.ai .msg-bubble li{margin-bottom:4px;line-height:1.65}
+  .msg-row.ai .msg-bubble pre{background:#0d0d14;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:12px 0;position:relative}
+  .code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:#13131f;border-bottom:1px solid var(--border)}
+  .code-lang{font-size:11px;color:var(--muted);font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:0.5px}
+  .copy-btn{padding:3px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);font-size:11px;cursor:pointer;font-family:'Fira Code',monospace;transition:all 0.15s}
+  .copy-btn:hover{color:var(--accent);border-color:var(--accent)}
+  .copy-btn.copied{color:var(--green);border-color:var(--green)}
+  .msg-row.ai .msg-bubble pre code{font-family:'Fira Code',monospace;font-size:13px;padding:14px 16px!important;display:block;overflow-x:auto;line-height:1.6}
+  .msg-row.ai .msg-bubble code:not(pre code){background:rgba(108,99,255,0.12);color:#a89fff;padding:2px 7px;border-radius:5px;font-family:'Fira Code',monospace;font-size:13px}
+  .msg-row.ai .msg-bubble strong{color:#fff;font-weight:700}
+  .msg-row.ai .msg-bubble blockquote{border-left:3px solid var(--accent);padding-left:14px;margin:12px 0;color:var(--text2);font-style:italic}
+  .msg-row.ai .msg-bubble hr{border:none;border-top:1px solid var(--border);margin:16px 0}
+  .msg-row.ai .msg-bubble table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px}
+  .msg-row.ai .msg-bubble th{background:var(--surface);padding:8px 12px;text-align:left;font-weight:600;border:1px solid var(--border)}
+  .msg-row.ai .msg-bubble td{padding:8px 12px;border:1px solid var(--border);color:var(--text2)}
 
-  #welcome {
-    margin: auto;
-    text-align: center;
-    animation: fadeUp 0.5s ease;
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  #welcome .big-icon { font-size: 52px; margin-bottom: 16px; display: block; }
-  #welcome h2 {
-    font-size: 26px; font-weight: 800; margin-bottom: 8px;
-    background: linear-gradient(135deg, var(--accent), #fff 60%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-  #welcome p { color: var(--muted); font-size: 14px; margin-bottom: 28px; line-height: 1.6; }
+  .typing-dots{display:flex;gap:5px;align-items:center;padding:4px 0}
+  .typing-dots span{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:blink 1.4s infinite}
+  .typing-dots span:nth-child(2){animation-delay:0.2s}
+  .typing-dots span:nth-child(3){animation-delay:0.4s}
+  @keyframes blink{0%,80%,100%{opacity:0.2;transform:scale(0.8)}40%{opacity:1;transform:scale(1)}}
 
-  .suggestion-chips {
-    display: flex; flex-wrap: wrap; gap: 8px;
-    justify-content: center; max-width: 520px; margin: 0 auto;
-  }
-  .chip {
-    padding: 8px 14px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    font-size: 13px; color: var(--muted);
-    cursor: pointer; transition: all 0.2s;
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .chip:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,229,176,0.05); }
+  #input-area{padding:12px 24px 18px;background:var(--bg);border-top:1px solid var(--border);flex-shrink:0}
+  .input-wrapper{max-width:900px;margin:0 auto}
 
-  .message {
-    display: flex; gap: 12px;
-    animation: fadeUp 0.3s ease;
-    max-width: 860px; width: 100%; margin: 0 auto;
-  }
-  .message.user { flex-direction: row-reverse; }
+  /* File preview */
+  #file-preview{display:none;align-items:center;gap:8px;padding:8px 12px;background:var(--accent-glow);border:1px solid rgba(108,99,255,0.2);border-radius:10px;margin-bottom:8px;font-size:12.5px;color:var(--text2);font-family:'Fira Code',monospace}
+  #file-preview.show{display:flex}
+  #file-preview .remove-file{cursor:pointer;color:#ff6b6b;margin-left:auto;font-size:14px}
 
-  .avatar {
-    width: 32px; height: 32px;
-    border-radius: 10px;
-    flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px;
-  }
-  .message.user .avatar { background: var(--accent2); }
-  .message.ai .avatar { background: linear-gradient(135deg, var(--accent), #00a07a); }
+  .input-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:10px 12px;display:flex;gap:10px;align-items:flex-end;transition:border-color 0.2s,box-shadow 0.2s}
+  .input-box:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+  
+  .attach-btn{width:34px;height:34px;background:none;border:none;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;border-radius:8px;transition:all 0.15s;flex-shrink:0}
+  .attach-btn:hover{color:var(--accent);background:var(--accent-glow)}
 
-  .bubble {
-    padding: 14px 18px;
-    border-radius: 16px;
-    line-height: 1.65;
-    font-size: 14.5px;
-    max-width: calc(100% - 50px);
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-  .message.user .bubble {
-    background: var(--user-bubble);
-    border: 1px solid var(--border);
-    border-top-right-radius: 4px;
-  }
-  .message.ai .bubble {
-    background: var(--ai-bubble);
-    border: 1px solid rgba(0,229,176,0.15);
-    border-top-left-radius: 4px;
-  }
+  #user-input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:14.5px;resize:none;max-height:160px;line-height:1.55}
+  #user-input::placeholder{color:var(--muted)}
 
-  .message.ai .bubble p { margin-bottom: 10px; }
-  .message.ai .bubble p:last-child { margin-bottom: 0; }
+  #send-btn{width:36px;height:36px;background:var(--accent);border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
+  #send-btn:hover{background:#5a52e8;transform:scale(1.05)}
+  #send-btn:disabled{background:var(--border);cursor:not-allowed;transform:none}
+  #send-btn svg{width:16px;height:16px;fill:white}
 
-  .message.ai .bubble pre {
-    background: #0d1117;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow-x: auto;
-    margin: 12px 0;
-    position: relative;
-  }
-  .message.ai .bubble pre code {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    padding: 16px !important;
-    display: block;
-  }
-  .copy-btn {
-    position: absolute; top: 8px; right: 8px;
-    padding: 4px 10px;
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 6px; color: var(--muted);
-    font-size: 11px; cursor: pointer;
-    font-family: 'JetBrains Mono', monospace;
-    transition: all 0.2s;
-  }
-  .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .input-footer{display:flex;justify-content:space-between;align-items:center;margin-top:7px;padding:0 4px}
+  .input-hint{font-size:11px;color:var(--muted);font-family:'Fira Code',monospace}
+  .model-badge{font-size:11px;color:var(--muted);font-family:'Fira Code',monospace;background:var(--surface);padding:3px 8px;border-radius:6px;border:1px solid var(--border)}
 
-  .message.ai .bubble code:not(pre code) {
-    background: rgba(0,229,176,0.1);
-    color: var(--accent);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-  }
-  .message.ai .bubble strong { color: #fff; }
+  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--green);color:var(--green);padding:9px 18px;border-radius:30px;font-size:12px;font-family:'Fira Code',monospace;z-index:100;animation:fadeUp 0.3s ease}
 
-  .typing-dots { display: flex; gap: 4px; align-items: center; padding: 4px 0; }
-  .typing-dots span {
-    width: 6px; height: 6px;
-    background: var(--accent); border-radius: 50%;
-    animation: blink 1.4s infinite;
-  }
-  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes blink {
-    0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
-    40% { opacity: 1; transform: scale(1); }
-  }
+  #file-input{display:none}
 
-  #input-area {
-    padding: 16px 24px 20px;
-    border-top: 1px solid var(--border);
-    background: rgba(10,10,15,0.9);
-    backdrop-filter: blur(10px);
-    flex-shrink: 0;
-  }
-  .input-box {
-    max-width: 860px; margin: 0 auto;
-    display: flex; gap: 10px; align-items: flex-end;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 10px 14px;
-    transition: border-color 0.2s;
-  }
-  .input-box:focus-within { border-color: var(--accent); }
-
-  #user-input {
-    flex: 1; background: none; border: none; outline: none;
-    color: var(--text);
-    font-family: 'Syne', sans-serif; font-size: 14.5px;
-    resize: none; max-height: 140px; line-height: 1.5;
-  }
-  #user-input::placeholder { color: var(--muted); }
-
-  #send-btn {
-    width: 36px; height: 36px;
-    background: var(--accent); border: none; border-radius: 10px;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; transition: all 0.2s;
-  }
-  #send-btn:hover { background: #00c497; transform: scale(1.05); }
-  #send-btn:disabled { background: var(--border); cursor: not-allowed; transform: none; }
-  #send-btn svg { width: 16px; height: 16px; fill: #000; }
-
-  .input-hint {
-    max-width: 860px; margin: 6px auto 0;
-    font-size: 11px; color: var(--muted);
-    text-align: center; font-family: 'JetBrains Mono', monospace;
-  }
-
-  .toast {
-    position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
-    background: var(--surface2); border: 1px solid var(--accent);
-    color: var(--accent); padding: 10px 20px; border-radius: 30px;
-    font-size: 13px; font-family: 'JetBrains Mono', monospace;
-    animation: fadeUp 0.3s ease; z-index: 100;
-  }
+  @media(max-width:768px){.sidebar{display:none}}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">💻</div>
-  <div class="header-text">
-    <h1>CodeMate AI</h1>
-    <p>powered by claude-haiku-4-5</p>
-  </div>
-  <div class="status-dot">
-    <span class="dot"></span>
-    <span>Online</span>
-  </div>
-</header>
-
-<div id="chat">
-  <div id="welcome">
-    <span class="big-icon">🤖</span>
-    <h2>Halo! Saya CodeMate</h2>
-    <p>Asisten coding kamu. Tanya apa saja tentang<br>programming, debug, atau konsep baru!</p>
-    <div class="suggestion-chips">
-      <span class="chip" onclick="sendSuggestion(this)">Apa itu REST API?</span>
-      <span class="chip" onclick="sendSuggestion(this)">Cara membuat for loop di Python</span>
-      <span class="chip" onclick="sendSuggestion(this)">Perbedaan == dan === di JavaScript</span>
-      <span class="chip" onclick="sendSuggestion(this)">Apa itu async/await?</span>
-      <span class="chip" onclick="sendSuggestion(this)">Contoh SQL JOIN</span>
-      <span class="chip" onclick="sendSuggestion(this)">Cara debug error NullPointerException</span>
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-icon">💻</div>
+    <div class="brand-text">
+      <div class="name">CodeMate AI</div>
+      <div class="by">by PRIME DEV</div>
     </div>
   </div>
-</div>
 
-<div id="input-area">
-  <div class="input-box">
-    <textarea id="user-input" rows="1" placeholder="Tanya tentang coding... (Enter untuk kirim, Shift+Enter untuk baris baru)"></textarea>
-    <button id="send-btn" onclick="sendMessage()">
-      <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-    </button>
+  <button class="new-chat-btn" onclick="newChat()">✏️ Chat Baru</button>
+
+  <div class="sidebar-section">Riwayat Chat</div>
+  <div class="history-list" id="history-list">
+    <div class="no-history">Belum ada riwayat</div>
   </div>
-  <p class="input-hint">Enter kirim • Shift+Enter baris baru</p>
-</div>
+
+  <div class="sidebar-section">Topik Cepat</div>
+  <div style="display:flex;flex-direction:column;gap:3px;margin-bottom:12px">
+    <div style="padding:8px 12px;border-radius:10px;font-size:12px;color:var(--text2);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='var(--surface)';this.style.color='var(--text)'" onmouseout="this.style.background='';this.style.color='var(--text2)'" onclick="sendSuggestion('Cara buat script Roblox')">🎮 Roblox Script</div>
+    <div style="padding:8px 12px;border-radius:10px;font-size:12px;color:var(--text2);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='var(--surface)';this.style.color='var(--text)'" onmouseout="this.style.background='';this.style.color='var(--text2)'" onclick="sendSuggestion('Cara debug error Python')">🐍 Python Debug</div>
+    <div style="padding:8px 12px;border-radius:10px;font-size:12px;color:var(--text2);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='var(--surface)';this.style.color='var(--text)'" onmouseout="this.style.background='';this.style.color='var(--text2)'" onclick="sendSuggestion('Cara membuat loop JavaScript')">⚡ JavaScript</div>
+    <div style="padding:8px 12px;border-radius:10px;font-size:12px;color:var(--text2);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='var(--surface)';this.style.color='var(--text)'" onmouseout="this.style.background='';this.style.color='var(--text2)'" onclick="sendSuggestion('Contoh query SQL JOIN')">🗄️ SQL</div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="online-badge">Online</div>
+    <div>llama-3.3-70b</div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">💬 Chat Baru</div>
+    <div class="topbar-actions">
+      <button class="icon-btn" onclick="newChat()">🗑️ Bersihkan</button>
+    </div>
+  </div>
+
+  <div id="chat">
+    <div id="welcome">
+      <span class="emoji">👨‍💻</span>
+      <h2>Halo! Saya CodeMate</h2>
+      <p>Asisten coding buatan <strong style="color:#a89fff">PRIME DEV</strong>.<br>Tanya apa saja, atau upload file kode kamu untuk direview!</p>
+      <div class="chips">
+        <span class="chip" onclick="sendSuggestion(this.textContent)">Apa itu REST API?</span>
+        <span class="chip" onclick="sendSuggestion(this.textContent)">Fix error Python</span>
+        <span class="chip" onclick="sendSuggestion(this.textContent)">Buat loop JavaScript</span>
+        <span class="chip" onclick="sendSuggestion(this.textContent)">Apa itu async/await?</span>
+        <span class="chip" onclick="sendSuggestion(this.textContent)">Contoh SQL JOIN</span>
+        <span class="chip" onclick="sendSuggestion(this.textContent)">Cara buat script Roblox</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="input-area">
+    <div class="input-wrapper">
+      <div id="file-preview">
+        <span>📎</span>
+        <span id="file-name">file.txt</span>
+        <span class="remove-file" onclick="removeFile()">✕</span>
+      </div>
+      <div class="input-box">
+        <button class="attach-btn" onclick="document.getElementById('file-input').click()" title="Upload file kode">📎</button>
+        <input type="file" id="file-input" accept=".js,.ts,.py,.lua,.html,.css,.json,.txt,.php,.java,.cpp,.c,.cs,.go,.rb,.swift,.kt,.rs,.sql,.xml,.yaml,.yml,.sh,.bat,.md" onchange="handleFile(this)">
+        <textarea id="user-input" rows="1" placeholder="Tanya tentang coding, atau upload file kode kamu..."></textarea>
+        <button id="send-btn" onclick="sendMessage()">
+          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+      <div class="input-footer">
+        <span class="input-hint">📎 Upload file • Enter kirim • Shift+Enter baris baru</span>
+        <span class="model-badge">llama-3.3-70b</span>
+      </div>
+    </div>
+  </div>
+</main>
 
 <script>
   const chatEl = document.getElementById('chat');
   const inputEl = document.getElementById('user-input');
   const sendBtn = document.getElementById('send-btn');
   const welcomeEl = document.getElementById('welcome');
+  const historyListEl = document.getElementById('history-list');
 
-  let conversationHistory = [];
+  let history = [];
+  let sessions = JSON.parse(localStorage.getItem('codemate_sessions') || '[]');
+  let currentSessionId = null;
   let isLoading = false;
+  let pendingFile = null;
 
-  inputEl.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
+  // Init
+  renderHistoryList();
+
+  inputEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
   });
-
   inputEl.addEventListener('input', () => {
     inputEl.style.height = 'auto';
-    inputEl.style.height = Math.min(inputEl.scrollHeight, 140) + 'px';
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 160) + 'px';
   });
 
-  function sendSuggestion(chip) {
-    inputEl.value = chip.textContent;
+  function handleFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      pendingFile = { name: file.name, content: e.target.result };
+      document.getElementById('file-name').textContent = file.name;
+      document.getElementById('file-preview').classList.add('show');
+      if (!inputEl.value) inputEl.value = `Tolong review file kode ini dan berikan saran perbaikan:`;
+      inputEl.focus();
+    };
+    reader.readAsText(file);
+    input.value = '';
+  }
+
+  function removeFile() {
+    pendingFile = null;
+    document.getElementById('file-preview').classList.remove('show');
+  }
+
+  function sendSuggestion(text) {
+    inputEl.value = text;
     sendMessage();
+  }
+
+  function newChat() {
+    if (history.length > 0) saveCurrentSession();
+    history = [];
+    currentSessionId = null;
+    chatEl.innerHTML = '';
+    chatEl.appendChild(welcomeEl);
+    welcomeEl.style.display = '';
+    inputEl.value = '';
+    inputEl.style.height = 'auto';
+    pendingFile = null;
+    document.getElementById('file-preview').classList.remove('show');
+    document.getElementById('topbar-title').textContent = '💬 Chat Baru';
+    document.querySelectorAll('.history-item').forEach(i => i.classList.remove('active'));
+  }
+
+  function saveCurrentSession() {
+    if (!history.length) return;
+    const firstMsg = history.find(m => m.role === 'user');
+    const title = firstMsg ? firstMsg.content.slice(0, 40) + (firstMsg.content.length > 40 ? '...' : '') : 'Chat';
+    if (currentSessionId) {
+      const idx = sessions.findIndex(s => s.id === currentSessionId);
+      if (idx !== -1) { sessions[idx].history = [...history]; sessions[idx].title = title; }
+    } else {
+      currentSessionId = Date.now().toString();
+      sessions.unshift({ id: currentSessionId, title, history: [...history], time: Date.now() });
+      if (sessions.length > 30) sessions = sessions.slice(0, 30);
+    }
+    localStorage.setItem('codemate_sessions', JSON.stringify(sessions));
+    renderHistoryList();
+  }
+
+  function loadSession(id) {
+    if (history.length > 0) saveCurrentSession();
+    const session = sessions.find(s => s.id === id);
+    if (!session) return;
+    currentSessionId = id;
+    history = [...session.history];
+    chatEl.innerHTML = '';
+    history.forEach(msg => {
+      if (msg.role === 'user') appendMessage('user', msg.displayContent || msg.content);
+      else appendMessage('ai', msg.content);
+    });
+    document.getElementById('topbar-title').textContent = '💬 ' + session.title;
+    document.querySelectorAll('.history-item').forEach(i => i.classList.remove('active'));
+    document.querySelector(`[data-id="${id}"]`)?.classList.add('active');
+  }
+
+  function deleteSession(id, e) {
+    e.stopPropagation();
+    sessions = sessions.filter(s => s.id !== id);
+    localStorage.setItem('codemate_sessions', JSON.stringify(sessions));
+    if (currentSessionId === id) newChat();
+    renderHistoryList();
+  }
+
+  function renderHistoryList() {
+    if (!sessions.length) {
+      historyListEl.innerHTML = '<div class="no-history">Belum ada riwayat</div>';
+      return;
+    }
+    historyListEl.innerHTML = sessions.map(s => `
+      <div class="history-item ${s.id === currentSessionId ? 'active' : ''}" data-id="${s.id}" onclick="loadSession('${s.id}')">
+        <span style="font-size:13px">💬</span>
+        <span class="h-title">${escHtml(s.title)}</span>
+        <span class="h-del" onclick="deleteSession('${s.id}', event)">✕</span>
+      </div>
+    `).join('');
   }
 
   async function sendMessage() {
     const text = inputEl.value.trim();
-    if (!text || isLoading) return;
+    if ((!text && !pendingFile) || isLoading) return;
 
-    if (welcomeEl) welcomeEl.style.display = 'none';
+    welcomeEl.style.display = 'none';
 
-    appendMessage('user', text);
-    conversationHistory.push({ role: 'user', content: text });
+    let userDisplayContent = text;
+    let apiContent = text;
+
+    if (pendingFile) {
+      const ext = pendingFile.name.split('.').pop();
+      const fileBlock = `\n\n\`\`\`${ext}\n// File: ${pendingFile.name}\n${pendingFile.content}\n\`\`\``;
+      apiContent = (text || 'Tolong review file kode ini dan berikan saran perbaikan:') + fileBlock;
+      userDisplayContent = (text || 'Tolong review file kode ini:') + `\n\n📎 ${pendingFile.name}`;
+      removeFile();
+    }
+
+    appendMessage('user', userDisplayContent);
+    history.push({ role: 'user', content: apiContent, displayContent: userDisplayContent });
     inputEl.value = '';
     inputEl.style.height = 'auto';
 
@@ -355,20 +360,18 @@
     sendBtn.disabled = true;
 
     try {
-      const response = await fetch('/api/chat', {
+      const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: conversationHistory })
+        body: JSON.stringify({ messages: history.map(m => ({ role: m.role, content: m.content })) })
       });
-
       removeTyping(typingId);
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Request gagal');
-
-      conversationHistory.push({ role: 'assistant', content: data.reply });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Request gagal');
+      history.push({ role: 'assistant', content: data.reply });
       appendMessage('ai', data.reply);
-
+      saveCurrentSession();
+      if (!currentSessionId) renderHistoryList();
     } catch (err) {
       removeTyping(typingId);
       appendMessage('ai', `❌ **Error:** ${err.message}`);
@@ -380,66 +383,86 @@
   }
 
   function appendMessage(role, content) {
-    const msg = document.createElement('div');
-    msg.className = `message ${role}`;
-
+    const row = document.createElement('div');
+    row.className = `msg-row ${role}`;
     const avatar = document.createElement('div');
     avatar.className = 'avatar';
     avatar.textContent = role === 'user' ? '👤' : '🤖';
-
+    const mc = document.createElement('div');
+    mc.className = 'msg-content';
+    const nm = document.createElement('div');
+    nm.className = 'msg-name';
+    nm.textContent = role === 'user' ? 'Kamu' : 'CodeMate AI';
     const bubble = document.createElement('div');
-    bubble.className = 'bubble';
-
+    bubble.className = 'msg-bubble';
     if (role === 'ai') {
-      bubble.innerHTML = formatMarkdown(content);
-      bubble.querySelectorAll('pre code').forEach(block => {
-        hljs.highlightElement(block);
-        const pre = block.parentElement;
-        const btn = document.createElement('button');
-        btn.className = 'copy-btn';
-        btn.textContent = 'copy';
-        btn.onclick = () => {
-          navigator.clipboard.writeText(block.textContent);
-          btn.textContent = '✓ copied';
-          setTimeout(() => btn.textContent = 'copy', 2000);
-        };
-        pre.appendChild(btn);
-      });
+      bubble.innerHTML = renderMarkdown(content);
+      bubble.querySelectorAll('pre code').forEach(b => hljs.highlightElement(b));
     } else {
-      bubble.textContent = content;
+      bubble.innerHTML = escHtml(content).replace(/\n/g, '<br>');
     }
-
-    msg.appendChild(avatar);
-    msg.appendChild(bubble);
-    chatEl.appendChild(msg);
+    mc.appendChild(nm);
+    mc.appendChild(bubble);
+    row.appendChild(avatar);
+    row.appendChild(mc);
+    chatEl.appendChild(row);
     chatEl.scrollTop = chatEl.scrollHeight;
   }
 
-  function formatMarkdown(text) {
-    return text
-      .replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) =>
-        `<pre><code class="language-${lang || 'plaintext'}">${escapeHtml(code.trim())}</code></pre>`)
-      .replace(/`([^`]+)`/g, '<code>$1</code>')
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .split('\n\n').map(p => p.trim() ? `<p>${p.replace(/\n/g, '<br>')}</p>` : '').join('');
+  function renderMarkdown(text) {
+    text = text.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) => {
+      const l = lang || 'code';
+      return `<pre><div class="code-header"><span class="code-lang">${l}</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><code class="language-${l}">${escHtml(code.trim())}</code></pre>`;
+    });
+    text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+    text = text.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+    text = text.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+    text = text.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+    text = text.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+    text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    text = text.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+    text = text.replace(/^---$/gm, '<hr>');
+    text = text.replace(/^\d+\. (.+)$/gm, '<li style="list-style:decimal">$1</li>');
+    text = text.replace(/^[-*] (.+)$/gm, '<li>$1</li>');
+    text = text.split(/\n\n+/).map(p => {
+      p = p.trim();
+      if (!p) return '';
+      if (/^<(h[123]|pre|ol|ul|blockquote|hr|li)/.test(p)) return p;
+      return `<p>${p.replace(/\n/g, '<br>')}</p>`;
+    }).join('');
+    return text;
   }
 
-  function escapeHtml(t) {
+  function copyCode(btn) {
+    const code = btn.closest('pre').querySelector('code').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function escHtml(t) {
     return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
   function showTyping() {
     const id = 'typing_' + Date.now();
-    const msg = document.createElement('div');
-    msg.className = 'message ai'; msg.id = id;
+    const row = document.createElement('div');
+    row.className = 'msg-row ai'; row.id = id;
     const av = document.createElement('div');
     av.className = 'avatar'; av.textContent = '🤖';
+    const mc = document.createElement('div');
+    mc.className = 'msg-content';
+    const nm = document.createElement('div');
+    nm.className = 'msg-name'; nm.textContent = 'CodeMate AI';
     const bub = document.createElement('div');
-    bub.className = 'bubble';
+    bub.className = 'msg-bubble';
     bub.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
-    msg.appendChild(av); msg.appendChild(bub);
-    chatEl.appendChild(msg);
+    mc.appendChild(nm); mc.appendChild(bub);
+    row.appendChild(av); row.appendChild(mc);
+    chatEl.appendChild(row);
     chatEl.scrollTop = chatEl.scrollHeight;
     return id;
   }
