@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CodeMate AI — by PRIME DEV</title>
+<title>PrimeDev AI — by PRIME DEV</title>
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
@@ -142,7 +142,7 @@
   <div class="brand">
     <div class="brand-icon">💻</div>
     <div class="brand-text">
-      <div class="name">CodeMate AI</div>
+      <div class="name">PrimeDev AI</div>
       <div class="by">by PRIME DEV</div>
     </div>
   </div>
@@ -179,7 +179,7 @@
   <div id="chat">
     <div id="welcome">
       <span class="emoji">👨‍💻</span>
-      <h2>Halo! Saya CodeMate</h2>
+      <h2>Halo! Saya PrimeDev</h2>
       <p>Asisten coding buatan <strong style="color:#a89fff">PRIME DEV</strong>.<br>Tanya apa saja, atau upload file kode kamu untuk direview!</p>
       <div class="chips">
         <span class="chip" onclick="sendSuggestion(this.textContent)">Apa itu REST API?</span>
@@ -223,7 +223,7 @@
   const historyListEl = document.getElementById('history-list');
 
   let history = [];
-  let sessions = JSON.parse(localStorage.getItem('codemate_sessions') || '[]');
+  let sessions = JSON.parse(localStorage.getItem('PrimeDev_sessions') || '[]');
   let currentSessionId = null;
   let isLoading = false;
   let pendingFile = null;
@@ -291,7 +291,7 @@
       sessions.unshift({ id: currentSessionId, title, history: [...history], time: Date.now() });
       if (sessions.length > 30) sessions = sessions.slice(0, 30);
     }
-    localStorage.setItem('codemate_sessions', JSON.stringify(sessions));
+    localStorage.setItem('PrimeDev_sessions', JSON.stringify(sessions));
     renderHistoryList();
   }
 
@@ -314,7 +314,7 @@
   function deleteSession(id, e) {
     e.stopPropagation();
     sessions = sessions.filter(s => s.id !== id);
-    localStorage.setItem('codemate_sessions', JSON.stringify(sessions));
+    localStorage.setItem('PrimeDev_sessions', JSON.stringify(sessions));
     if (currentSessionId === id) newChat();
     renderHistoryList();
   }
@@ -392,7 +392,7 @@
     mc.className = 'msg-content';
     const nm = document.createElement('div');
     nm.className = 'msg-name';
-    nm.textContent = role === 'user' ? 'Kamu' : 'CodeMate AI';
+    nm.textContent = role === 'user' ? 'Kamu' : 'PrimeDev AI';
     const bubble = document.createElement('div');
     bubble.className = 'msg-bubble';
     if (role === 'ai') {
@@ -456,7 +456,7 @@
     const mc = document.createElement('div');
     mc.className = 'msg-content';
     const nm = document.createElement('div');
-    nm.className = 'msg-name'; nm.textContent = 'CodeMate AI';
+    nm.className = 'msg-name'; nm.textContent = 'PrimeDev AI';
     const bub = document.createElement('div');
     bub.className = 'msg-bubble';
     bub.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
