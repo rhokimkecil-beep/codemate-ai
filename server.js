@@ -5,14 +5,12 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ⚠️ Ganti dengan API Key kamu, atau set sebagai environment variable
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || 'sk-ant-api03-MASUKKAN-KEY-KAMU-DISINI';
+const GROQ_API_KEY = process.env.GROQ_API_KEY || 'gsk_MASUKKAN-KEY-KAMU-DISINI';
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Endpoint chat
 app.post('/api/chat', async (req, res) => {
   const { messages } = req.body;
 
@@ -21,22 +19,26 @@ app.post('/api/chat', async (req, res) => {
   }
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
+        'Authorization': `Bearer ${GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
+        model: 'llama-3.3-70b-versatile',
         max_tokens: 2048,
-        system: `Kamu adalah CodeMate, asisten coding yang expert dan ramah.
+        messages: [
+          {
+            role: 'system',
+            content: `Kamu adalah CodeMate, asisten coding yang expert dan ramah.
 Kamu ahli dalam semua bahasa pemrograman dan topik teknologi.
 Selalu jawab dalam Bahasa Indonesia yang natural dan mudah dipahami.
 Ketika memberikan kode, gunakan format markdown dengan blok kode yang jelas.
-Berikan penjelasan yang singkat tapi lengkap. Jika ada error, bantu debug dengan detail.`,
-        messages
+Berikan penjelasan yang singkat tapi lengkap. Jika ada error, bantu debug dengan detail.`
+          },
+          ...messages
+        ]
       })
     });
 
@@ -46,7 +48,7 @@ Berikan penjelasan yang singkat tapi lengkap. Jika ada error, bantu debug dengan
     }
 
     const data = await response.json();
-    res.json({ reply: data.content[0].text });
+    res.json({ reply: data.choices[0].message.content });
 
   } catch (err) {
     console.error(err);
