@@ -1,5 +1,4 @@
-{
-  "name": "codemate-ai",
+{"name": "primedev-ai",
   "version": "1.0.0",
   "description": "Asisten coding AI berbasis Claude",
   "main": "server.js",
